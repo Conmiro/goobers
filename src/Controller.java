@@ -5,6 +5,12 @@
  */
 public class Controller {
 	
+	public static void main(String[] args) {
+		User fakeUser = new User("fakename", "passphrase", new Manage(), true);
+		Account fakeAccount = new SecureAccount(fakeUser);
+		new Controller(fakeAccount);
+	}
+	
 	private Account currentAccount;
 	private User currentUser;
 //	TODO ADD REAL INTERFACE!!!!!

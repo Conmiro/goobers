@@ -25,10 +25,6 @@ public abstract class Account {
 		
 	}
 	
-	public void changeUserAccess(String name) {
-		
-	}
-
 	public User getAccountOwner() {
 		return this.accountOwner;
 	}
@@ -45,6 +41,22 @@ public abstract class Account {
 		this.accountOwner = accountOwner;
 	}
 	
+	public Double getAmount() {
+		return amount;
+	}
+
+	public void setAmount(Double amount) {
+		this.amount = amount;
+	}
+
+	public Policy getPolicyType() {
+		return policyType;
+	}
+
+	public void setPolicyType(Policy policyType) {
+		this.policyType = policyType;
+	}
+
 	public abstract String transferFunds(Double amount);
 
 	public abstract String payBills();
