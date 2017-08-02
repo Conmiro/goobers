@@ -4,6 +4,8 @@ public abstract class Account {
 
 	private User accountOwner;
 	private ArrayList<User> accountUsers;
+	private Double amount;
+	private Policy policyType;
 
 	public Account(User accountOwner) {
 		this.accountOwner = accountOwner;
@@ -43,7 +45,7 @@ public abstract class Account {
 		this.accountOwner = accountOwner;
 	}
 	
-	public abstract String transferFunds();
+	public abstract String transferFunds(Double amount);
 
 	public abstract String payBills();
 

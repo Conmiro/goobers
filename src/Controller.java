@@ -1,9 +1,13 @@
-
+/**
+ * This is just an example to help us figure out what we need in the model
+ * @author bree
+ *
+ */
 public class Controller {
 	
 	private Account currentAccount;
 	private User currentUser;
-//	TODO FIX THIS!!!!!
+//	TODO ADD REAL INTERFACE!!!!!
 	private String command;
 	
 	
@@ -22,6 +26,16 @@ public class Controller {
 		if(command.equalsIgnoreCase("Change user access level")) {
 			boolean fullAccess = getIfFullAccess();
 			
+		}
+		
+		if(command.equals("transfer money")) {
+			if(currentUser.getAccess().canTransferBalance()) {
+//				make the transfer
+				Double amount = getAmountToTransfer();
+				currentAccount.transferFunds(amount);
+			} else {
+//				rejected!
+			}
 		}
 		
 		

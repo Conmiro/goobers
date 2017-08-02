@@ -5,12 +5,13 @@ public class DataAccount extends Account {
 	}
 
 	@Override
-	public String transferFunds() {
+	public String transferFunds(Double amount) {
 		return "I transferred funds";
 	}
 
 	@Override
 	public String payBills() {
+		
 		return "I paid bills";
 	}
 	
