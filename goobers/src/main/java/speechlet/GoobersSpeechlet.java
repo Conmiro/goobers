@@ -70,6 +70,7 @@ public class GoobersSpeechlet implements Speechlet {
 		Intent intent = request.getIntent();
 		String intentName = (intent != null) ? intent.getName() : null;
 
+		System.err.println("INTENT NAME: " + intentName);
 		if ("firstNameIntent".equals(intentName)) {
 //        	set the name as session variable
 			Slot nameSlot = intent.getSlot("FirstName");
