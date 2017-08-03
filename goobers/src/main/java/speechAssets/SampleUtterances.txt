@@ -60,3 +60,5 @@ payBillIntent pay my Bill
 amountIntent {Amount}
 firstNameIntent {FirstName}
 passPhraseIntent {PassPhrase}
+logoutIntent logout
+logoutIntent log off
