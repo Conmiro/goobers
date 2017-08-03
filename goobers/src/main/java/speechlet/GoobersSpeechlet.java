@@ -164,33 +164,43 @@ public class GoobersSpeechlet implements Speechlet {
 		String speechOutput = "";
 		String repromptText = "";
 //		check that passphrase/pin matches
-		User tempUser = accountDao.getUserFromPin(session.getAttribute(USERNAME).toString(), session.getAttribute(PASSPHRASE).toString());
-		if(tempUser == null) {
-			tempUser = accountDao.getUserFromPassphrase(session.getAttribute(USERNAME).toString(), session.getAttribute(PASSPHRASE).toString());
-		}
-
-		if(tempUser != null) {
-//			initialize currentUser
-			boolean isOwner = false;
-
-			if(tempUser.isOwner()) {
-//				check if the passphrase matches the pin or the passphrase
-				if(session.getAttribute(PASSPHRASE).equals(tempUser.getPin())) {
-					currentUser = tempUser;
-				} else {
-					currentUser = new User(tempUser.getUserName(), tempUser.getPassPhrase(), tempUser.getPin(), new View(), tempUser.isOwner());
-				}
-			} else {
-				currentUser = tempUser;
-			}
-
-			speechOutput = "What would you like to do with your account?";
+		System.out.println("made it into handlePassphraseIntent");
+		
+		if(session.getAttribute(USERNAME) == null) {
+			speechOutput = "Please say your username";
 			repromptText = speechOutput;
 		} else {
-//			else reprompt for correct pin/passphrase
-			speechOutput = "Your username and passphrase were incorrect. Please try again";
-			repromptText = "Please say your username";
-
+		
+			System.out.println("about to getUserFromPin");
+			User tempUser = accountDao.getUserFromPin(session.getAttribute(USERNAME).toString(), session.getAttribute(PASSPHRASE).toString());
+			if(tempUser == null) {
+				System.out.println("about to getUserFromPassphrase");
+				tempUser = accountDao.getUserFromPassphrase(session.getAttribute(USERNAME).toString(), session.getAttribute(PASSPHRASE).toString());
+			}
+	
+			if(tempUser != null) {
+	//			initialize currentUser
+				boolean isOwner = false;
+	
+				if(tempUser.isOwner()) {
+	//				check if the passphrase matches the pin or the passphrase
+					if(session.getAttribute(PASSPHRASE).equals(tempUser.getPin())) {
+						currentUser = tempUser;
+					} else {
+						currentUser = new User(tempUser.getUserName(), tempUser.getPassPhrase(), tempUser.getPin(), new View(), tempUser.isOwner());
+					}
+				} else {
+					currentUser = tempUser;
+				}
+	
+				speechOutput = "What would you like to do with your account?";
+				repromptText = speechOutput;
+			} else {
+	//			else reprompt for correct pin/passphrase
+				speechOutput = "Your username and passphrase were incorrect. Please try again";
+				repromptText = "Please say your username";
+	
+			}
 		}
 
 		return newAskResponseLocal(speechOutput, repromptText);
