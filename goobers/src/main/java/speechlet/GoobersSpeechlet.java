@@ -55,7 +55,7 @@ public class GoobersSpeechlet implements Speechlet {
 		String speechOutput = "";
 
 		// Reprompt speech will be triggered if the user doesn't respond.
-		String repromptText = "What is your name?";
+		String repromptText = "Welcome to the Goober app. Please state your first name.";
 
 		// The stage variable tracks the phase of the dialogue.
 		// When this function completes, it will be on stage 1.
@@ -85,7 +85,7 @@ public class GoobersSpeechlet implements Speechlet {
 	        	Slot passSlot = intent.getSlot("Credential");
 	        	String phrase = passSlot.getValue();
 	        	session.setAttribute(PASSPHRASE, phrase);
-	        	return handlePassphraseItent(session);
+	        	return handlePassphraseIntent(session);
 			}
         } else if("AMAZON.NUMBER".equals(intentName)) {
         	Slot amountSlot = intent.getSlot("Amount");
@@ -163,7 +163,7 @@ public class GoobersSpeechlet implements Speechlet {
 	}
 
 
-	private SpeechletResponse handlePassphraseItent(Session session) {
+	private SpeechletResponse handlePassphraseIntent(Session session) {
 		String speechOutput = "";
 		String repromptText = "";
 //		check that passphrase/pin matches
@@ -176,6 +176,8 @@ public class GoobersSpeechlet implements Speechlet {
 		} else {
 		
 			System.out.println("about to getUserFromPin");
+			System.out.println("username: " + session.getAttribute(USERNAME).toString());
+			System.out.println("username: " + session.getAttribute(PASSPHRASE).toString());
 			User tempUser = accountDao.getUserFromPin(session.getAttribute(USERNAME).toString(), session.getAttribute(PASSPHRASE).toString());
 			if(tempUser == null) {
 				System.out.println("about to getUserFromPassphrase");
@@ -346,8 +348,8 @@ public class GoobersSpeechlet implements Speechlet {
 	private SpeechletResponse handleLogoutIntent(Session session) {
 		currentUser = null;
 		
-		String speechOutput = "";
-		String repromptText = "";
+		String speechOutput = "You have successfully logged out. Please state your first name.";
+		String repromptText = "Please state your first name.";
 		
 		return newAskResponseLocal(speechOutput, repromptText);
 	}
