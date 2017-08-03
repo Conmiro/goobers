@@ -89,7 +89,7 @@ public class GoobersSpeechlet implements Speechlet {
 	        	session.setAttribute(PASSPHRASE, phrase);
 	        	return handlePassphraseIntent(session);
 			}
-        } else if("AMAZON.NUMBER".equals(intentName)) {
+        } else if("amountIntent".equals(intentName)) {
         	Slot amountSlot = intent.getSlot("Amount");
         	String amountString = amountSlot.getValue();
         	session.setAttribute(AMOUNT, amountString);
