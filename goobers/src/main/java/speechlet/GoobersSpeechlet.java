@@ -13,10 +13,10 @@ import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.OutputSpeech;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
 import com.amazon.speech.ui.Reprompt;
+
 import main.java.db.AccountDAO;
 import main.java.model.User;
 import main.java.perms.View;
-import main.java.resource.Account;
 
 /**
  * This is just an example to help us figure out what we need in the model
@@ -35,7 +35,7 @@ public class GoobersSpeechlet implements Speechlet {
 	private static final int PASSLOGIN = 3;
 	private static final int BILL_PAY = 4;
 	private static final int TRANSFER = 5;
-	private static final Object VIEW_BALANCE = null;
+	private static final int VIEW_BALANCE = 6;
 
 	//	vars needed for this session
 	private User currentUser;
@@ -65,7 +65,6 @@ public class GoobersSpeechlet implements Speechlet {
 		speechOutput = repromptText;
 
 		return newAskResponseLocal(speechOutput, repromptText);
-
 	}
 
 
@@ -153,27 +152,17 @@ public class GoobersSpeechlet implements Speechlet {
             throw new SpeechletException("Invalid Intent");
         }
 	}
+	
+	private SpeechletResponse handleNameIntent(Session session) {
 
+		session.setAttribute(SESSION_STAGE, USERLOGIN);
+		String speechOutput = "Please say your pin or passphrase";
 
-	private SpeechletResponse handleTransferMoneyExecute(Session session) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		// Reprompt speech will be triggered if the user doesn't respond.
+		String repromptText = speechOutput;
 
-
-	private SpeechletResponse handleBillPayExecute(Session session) {
-
-		int amount = Integer.parseInt(session.getAttribute(AMOUNT).toString());
-		accountDao.setAccountBalance("checking", (float) amount);
-		
-		float accountBalance = accountDao.getAccountBalance("checking");
-		
-		String speechOutput = "Your bill has been paid. You now have " + accountBalance + " in your checking account.";
-		String repromptText = "What would you like to do with your account?";
-		
 		return newAskResponseLocal(speechOutput, repromptText);
 	}
-
 
 	private SpeechletResponse handlePassphraseIntent(Session session) {
 		String speechOutput = "";
@@ -209,8 +198,7 @@ public class GoobersSpeechlet implements Speechlet {
 				speechOutput = "What would you like to do with your account?";
 				repromptText = speechOutput;
 			} else {
-				session.setAttribute(USERNAME, null);
-				session.setAttribute(PASSPHRASE, null);
+
 				session.setAttribute(SESSION_STAGE, LOGIN);
 				
 	//			else reprompt for correct pin/passphrase
@@ -220,20 +208,32 @@ public class GoobersSpeechlet implements Speechlet {
 			}
 		}
 
+		session.setAttribute(USERNAME, null);
+		session.setAttribute(PASSPHRASE, null);
 		return newAskResponseLocal(speechOutput, repromptText);
 	}
 
-	private SpeechletResponse handleNameIntent(Session session) {
+	private SpeechletResponse handleTransferMoneyExecute(Session session) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-//		TODO refine phrasing?
-		session.setAttribute(SESSION_STAGE, USERLOGIN);
-		String speechOutput = "Please say your pin or passphrase";
 
-		// Reprompt speech will be triggered if the user doesn't respond.
-		String repromptText = speechOutput;
+	private SpeechletResponse handleBillPayExecute(Session session) {
 
+		int amount = Integer.parseInt(session.getAttribute(AMOUNT).toString());
+		float oldAmount = accountDao.getAccountBalance("checking");
+		accountDao.setAccountBalance("checking", oldAmount - ((float) amount));
+		
+		float accountBalance = accountDao.getAccountBalance("checking");
+		
+		String speechOutput = "Your bill has been paid. You now have " + accountBalance + " in your checking account.";
+		String repromptText = "What would you like to do with your account?";
+		
 		return newAskResponseLocal(speechOutput, repromptText);
 	}
+
+
 
 
 	private SpeechletResponse handleUpdateInsuranceYesIntent(Session session) {
@@ -270,16 +270,18 @@ public class GoobersSpeechlet implements Speechlet {
 
 
 	private SpeechletResponse handleAddAccountIntent(Session session) {
-
-		if(currentUser != null) {
-			// TODO check if the currentUser has permission
-
+		String speechOutput = "";
+		String repromptText = "";
+		
+		if(currentUser != null && currentUser.isOwner()) {
+//			TODO get new user name
+			
 		} else {
-
+			
 		}
 
 
-		return null;
+		return newAskResponseLocal(speechOutput, repromptText);
 	}
 
 
@@ -368,7 +370,7 @@ public class GoobersSpeechlet implements Speechlet {
 				repromptText = "What would you like to do with your account?";
 			}
 		} else {
-			speechOutput = "You must log in first. What is your first name?";
+			speechOutput = "You must log in first. Please say your first name?";
 			repromptText = "What is your first name?";
 		}
 
@@ -380,8 +382,8 @@ public class GoobersSpeechlet implements Speechlet {
 		
 		session.setAttribute(SESSION_STAGE, LOGIN);
 		
-		String speechOutput = "You have successfully logged out. Please state your first name.";
-		String repromptText = "Please state your first name.";
+		String speechOutput = "You have successfully logged out. Please say your first name.";
+		String repromptText = "Please say your first name.";
 		
 		return newAskResponseLocal(speechOutput, repromptText);
 	}
@@ -400,7 +402,7 @@ public class GoobersSpeechlet implements Speechlet {
 
 	@Override
 	public void onSessionEnded(SessionEndedRequest request, Session session) throws SpeechletException {
-
+		
 	}
 
 }
