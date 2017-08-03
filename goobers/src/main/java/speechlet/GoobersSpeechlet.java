@@ -32,6 +32,7 @@ public class GoobersSpeechlet implements Speechlet {
 
 	private static final int LOGIN = 1;
 	private static final int BILL_PAY = 2;
+	private static final int TRANSFER = 3;
 
 	//	vars needed for this session
 	private User currentUser;
@@ -73,77 +74,77 @@ public class GoobersSpeechlet implements Speechlet {
 		System.err.println("INTENT NAME: " + intentName);
 		if ("firstNameIntent".equals(intentName)) {
 //        	set the name as session variable
-			Slot nameSlot = intent.getSlot("FirstName");
-			String username = nameSlot.getValue();
-			session.setAttribute(USERNAME, username);
-			return handleNameIntent(session);
-		} else if("passphraseIntent".equals(intentName)) {
-			// store passphrase as a session variable
-			Slot passSlot = intent.getSlot("PassPhrase");
-			String phrase = passSlot.getValue();
-			session.setAttribute(PASSPHRASE, phrase);
-			return handlePassphraseItent(session);
-		} else if("AMAZON.NUMBER".equals(intentName)) {
-			Slot amountSlot = intent.getSlot("Amount");
-			String amountString = amountSlot.getValue();
-			session.setAttribute(AMOUNT, amountString);
-			if(session.getAttribute(SESSION_STAGE).equals(BILL_PAY)) {
-				return handleBillPayExecute(session);
-			} else {
-				return handleTransferMoneyExecute(session);
-			}
-		}
-		else if ("viewAccountIntent".equals(intentName)) {
-			return handleViewAccountIntent(session);
-		} else if ("viewInsuranceIntent".equals(intentName)) {
-			return handleViewInsuranceIntent(session);
-		} else if ("transferMoneyIntent".equals(intentName)) {
-			return handleTransferMoneyIntent(session);
-		} else if ("payBillIntent".equals(intentName)) {
-			return handlePayBillIntent(session);
-		} else if ("updateInsuranceIntent".equals(intentName)) {
-			return handleUpdateInsuranceIntent(session);
-		} else if ("removeAccountIntent".equals(intentName)) {
-			return handleRemoveAccountIntent(session);
-		} else if ("addAccountIntent".equals(intentName)) {
-			return handleAddAccountIntent(session);
-		} else if ("AMAZON.StopIntent".equals(intentName)) {
-			return handleStopIntent(session);
-		} else if ("AMAZON.CancelIntent".equals(intentName)) {
-			return handleCancelIntent(session);
-		} else if ("menuIntent".equals(intentName)) {
-			return handleMenuIntent(session);
-		} else if ("AMAZON.HelpIntent".equals(intentName)) {
-			String speechOutput = "";
-			int stage = -1;
-			if (session.getAttributes().containsKey(SESSION_STAGE)) {
-				stage = (Integer) session.getAttribute(SESSION_STAGE);
-			}
-//            TODO update these
-			switch (stage) {
-				case 0:
-					speechOutput =
-							"Knock knock jokes are a fun call and response type of joke. "
-									+ "To start the joke, just ask by saying tell me a"
-									+ " joke, or you can say exit.";
-					break;
-				case 1:
-					speechOutput = "You can ask, who's there, or you can say exit.";
-					break;
-				case 2:
-					speechOutput = "You can ask, who, or you can say exit.";
-					break;
-				default:
-					speechOutput =
-							"Knock knock jokes are a fun call and response type of joke. "
-									+ "To start the joke, just ask by saying tell me a "
-									+ "joke, or you can say exit.";
-			}
-			String repromptText = speechOutput;
-			return newAskResponseLocal(speechOutput, repromptText);
-		} else {
-			throw new SpeechletException("Invalid Intent");
-		}
+        	Slot nameSlot = intent.getSlot("FirstName");
+        	String username = nameSlot.getValue();
+        	session.setAttribute(USERNAME, username);
+        	return handleNameIntent(session);
+        } else if("passphraseIntent".equals(intentName)) {
+        	// store passphrase as a session variable
+        	Slot passSlot = intent.getSlot("PassPhrase");
+        	String phrase = passSlot.getValue();
+        	session.setAttribute(PASSPHRASE, phrase);
+        	return handlePassphraseItent(session);
+        } else if("AMAZON.NUMBER".equals(intentName)) {
+        	Slot amountSlot = intent.getSlot("Amount");
+        	String amountString = amountSlot.getValue();
+        	session.setAttribute(AMOUNT, amountString);
+        	if((Integer) session.getAttribute(SESSION_STAGE) == BILL_PAY) {
+        		return handleBillPayExecute(session);
+        	} else {
+        		return handleTransferMoneyExecute(session);
+        	}
+        }
+        else if ("viewAccountIntent".equals(intentName)) {
+            return handleViewAccountIntent(session);
+        } else if ("viewInsuranceIntent".equals(intentName)) {
+            return handleViewInsuranceIntent(session);
+        } else if ("transferMoneyIntent".equals(intentName)) {
+            return handleTransferMoneyIntent(session);
+        } else if ("payBillIntent".equals(intentName)) {
+            return handlePayBillIntent(session);
+        } else if ("updateInsuranceIntent".equals(intentName)) {
+            return handleUpdateInsuranceIntent(session);
+        } else if ("removeAccountIntent".equals(intentName)) {
+            return handleRemoveAccountIntent(session);
+        } else if ("addAccountIntent".equals(intentName)) {
+            return handleAddAccountIntent(session);
+        } else if ("AMAZON.StopIntent".equals(intentName)) {
+            return handleStopIntent(session);
+        } else if ("AMAZON.CancelIntent".equals(intentName)) {
+            return handleCancelIntent(session);
+        } else if ("menuIntent".equals(intentName)) {
+            return handleMenuIntent(session);
+        } else if ("AMAZON.HelpIntent".equals(intentName)) {
+            String speechOutput = "";
+            int stage = -1;
+            if (session.getAttributes().containsKey(SESSION_STAGE)) {
+                stage = (Integer) session.getAttribute(SESSION_STAGE);
+            }
+//          TODO update these
+            switch (stage) {
+                case 0:
+                    speechOutput =
+                            "Knock knock jokes are a fun call and response type of joke. "
+                                    + "To start the joke, just ask by saying tell me a"
+                                    + " joke, or you can say exit.";
+                    break;
+                case 1:
+                    speechOutput = "You can ask, who's there, or you can say exit.";
+                    break;
+                case 2:
+                    speechOutput = "You can ask, who, or you can say exit.";
+                    break;
+                default:
+                    speechOutput =
+                            "Knock knock jokes are a fun call and response type of joke. "
+                                    + "To start the joke, just ask by saying tell me a "
+                                    + "joke, or you can say exit.";
+            }
+            String repromptText = speechOutput;
+            return newAskResponseLocal(speechOutput, repromptText);
+        } else {
+            throw new SpeechletException("Invalid Intent");
+        }
 	}
 
 
@@ -163,9 +164,9 @@ public class GoobersSpeechlet implements Speechlet {
 		String speechOutput = "";
 		String repromptText = "";
 //		check that passphrase/pin matches
-		User tempUser = accountDao.getUserFromPassphrase(session.getAttribute(USERNAME).toString(), session.getAttribute(PASSPHRASE).toString());
+		User tempUser = accountDao.getUserFromPin(session.getAttribute(USERNAME).toString(), session.getAttribute(PASSPHRASE).toString());
 		if(tempUser == null) {
-			tempUser = accountDao.getUserFromPin(session.getAttribute(USERNAME).toString(), session.getAttribute(PASSPHRASE).toString());
+			tempUser = accountDao.getUserFromPassphrase(session.getAttribute(USERNAME).toString(), session.getAttribute(PASSPHRASE).toString());
 		}
 
 		if(tempUser != null) {
@@ -174,7 +175,7 @@ public class GoobersSpeechlet implements Speechlet {
 
 			if(tempUser.isOwner()) {
 //				check if the passphrase matches the pin or the passphrase
-				if("<passphrase goes here>".equals(tempUser.getPin())) {
+				if(session.getAttribute(PASSPHRASE).equals(tempUser.getPin())) {
 					currentUser = tempUser;
 				} else {
 					currentUser = new User(tempUser.getUserName(), tempUser.getPassPhrase(), tempUser.getPin(), new View(), tempUser.isOwner());
@@ -275,10 +276,11 @@ public class GoobersSpeechlet implements Speechlet {
 		if(currentUser != null) {
 			// check if user has permissions
 			if(currentUser.getAccess().canBillPay()) {
+				session.setAttribute(SESSION_STAGE, BILL_PAY);
 				speechOutput = "What amount would you like to pay?";
 				repromptText = speechOutput;
 			} else {
-				speechOutput = "You do not have permission to bill pay. What would you like to do with your account?";
+				speechOutput = "You do not have permission to pay bills. What would you like to do with your account?";
 				repromptText = "What would you like to do with your account?";
 			}
 		} else {
@@ -286,15 +288,32 @@ public class GoobersSpeechlet implements Speechlet {
 			repromptText = "What is your username?";
 		}
 
-
-
-		return null;
+		return newAskResponseLocal(speechOutput, repromptText);
 	}
 
 
 	private SpeechletResponse handleTransferMoneyIntent(Session session) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		String speechOutput = "";
+		String repromptText = "";
+
+		// check if user is logged in
+		if(currentUser != null) {
+			// check if user has permissions
+			if(currentUser.getAccess().canBillPay()) {
+				session.setAttribute(SESSION_STAGE, TRANSFER);
+				speechOutput = "What amount would you like to transfer?";
+				repromptText = speechOutput;
+			} else {
+				speechOutput = "You do not have permission to transfer money. What would you like to do with your account?";
+				repromptText = "What would you like to do with your account?";
+			}
+		} else {
+			speechOutput = "You must log in first. What is your username?";
+			repromptText = "What is your username?";
+		}
+
+		return newAskResponseLocal(speechOutput, repromptText);
 	}
 
 
