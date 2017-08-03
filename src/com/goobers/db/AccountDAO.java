@@ -17,7 +17,6 @@ public class AccountDAO {
 
         try
         {
-
             Class.forName("com.mysql.jdbc.Driver");
             connection =DriverManager.getConnection(
                     "jdbc:mysql://mydbinstance.c3xdqfzq9yis.us-east-1.rds.amazonaws.com:3306/goobers",
@@ -30,30 +29,6 @@ public class AccountDAO {
 
     }
 
-    public List<String> getTableNameList() {
-
-        List<String> nameList = new ArrayList<String>();
-
-        try {
-            PreparedStatement stmt = connection.prepareStatement("select    *\n" +
-                    "from      information_schema.tables\n" +
-                    "where     table_type='view';");
-
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                nameList.add(rs.getString("TABLE_NAME"));
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-
-        return nameList;
-
-
-    }
 
     public int getAccountBalance(String accountType) {
 

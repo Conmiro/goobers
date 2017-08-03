@@ -20,7 +20,7 @@ import com.goobers.model.User;
  * @author bree
  *
  */
-public class IntentHandlerWIP implements Speechlet {
+public class GoobersSpeechlet implements Speechlet {
 	
 	private static final String SESSION_STAGE = "stage";
 	private static final Object LOGIN = 1;
