@@ -41,7 +41,7 @@ public class GoobersSpeechlet implements Speechlet {
 
 	@Override
 	public void onSessionStarted(SessionStartedRequest request, Session session) throws SpeechletException {
-
+		accountDao = new AccountDAO();
 	}
 
 
@@ -117,6 +117,8 @@ public class GoobersSpeechlet implements Speechlet {
             return handleCancelIntent(session);
         } else if ("menuIntent".equals(intentName)) {
             return handleMenuIntent(session);
+        } else if("logoutIntent".equals(intentName)) {
+        	return handleLogoutIntent(session);
         } else if ("AMAZON.HelpIntent".equals(intentName)) {
             String speechOutput = "";
             int stage = -1;
@@ -177,7 +179,7 @@ public class GoobersSpeechlet implements Speechlet {
 		
 			System.out.println("about to getUserFromPin");
 			System.out.println("username: " + session.getAttribute(USERNAME).toString());
-			System.out.println("username: " + session.getAttribute(PASSPHRASE).toString());
+			System.out.println("passphrase: " + session.getAttribute(PASSPHRASE).toString());
 			User tempUser = accountDao.getUserFromPin(session.getAttribute(USERNAME).toString(), session.getAttribute(PASSPHRASE).toString());
 			if(tempUser == null) {
 				System.out.println("about to getUserFromPassphrase");
