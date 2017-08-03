@@ -16,6 +16,7 @@ import com.amazon.speech.ui.Reprompt;
 import main.java.db.AccountDAO;
 import main.java.model.User;
 import main.java.perms.View;
+import main.java.resource.Account;
 
 /**
  * This is just an example to help us figure out what we need in the model
@@ -34,6 +35,7 @@ public class GoobersSpeechlet implements Speechlet {
 	private static final int PASSLOGIN = 3;
 	private static final int BILL_PAY = 4;
 	private static final int TRANSFER = 5;
+	private static final Object VIEW_BALANCE = null;
 
 	//	vars needed for this session
 	private User currentUser;
@@ -55,7 +57,7 @@ public class GoobersSpeechlet implements Speechlet {
 		String speechOutput = "";
 
 		// Reprompt speech will be triggered if the user doesn't respond.
-		String repromptText = "Welcome to the Goober app. Please state your first name.";
+		String repromptText = "Welcome to the Goober app. Please say your first name.";
 
 		// The stage variable tracks the phase of the dialogue.
 		// When this function completes, it will be on stage 1.
@@ -160,8 +162,16 @@ public class GoobersSpeechlet implements Speechlet {
 
 
 	private SpeechletResponse handleBillPayExecute(Session session) {
-		// TODO Auto-generated method stub
-		return null;
+
+		int amount = Integer.parseInt(session.getAttribute(AMOUNT).toString());
+		accountDao.setAccountBalance("checking", (float) amount);
+		
+		float accountBalance = accountDao.getAccountBalance("checking");
+		
+		String speechOutput = "Your bill has been paid. You now have " + accountBalance + " in your checking account.";
+		String repromptText = "What would you like to do with your account?";
+		
+		return newAskResponseLocal(speechOutput, repromptText);
 	}
 
 
@@ -169,20 +179,15 @@ public class GoobersSpeechlet implements Speechlet {
 		String speechOutput = "";
 		String repromptText = "";
 //		check that passphrase/pin matches
-		System.out.println("made it into handlePassphraseIntent");
 		session.setAttribute(SESSION_STAGE, PASSLOGIN);
 		
 		if(session.getAttribute(USERNAME) == null) {
 			speechOutput = "Please say your username";
 			repromptText = speechOutput;
 		} else {
-		
-			System.out.println("about to getUserFromPin");
-			System.out.println("username: " + session.getAttribute(USERNAME).toString());
-			System.out.println("passphrase: " + session.getAttribute(PASSPHRASE).toString());
+
 			User tempUser = accountDao.getUserFromPin(session.getAttribute(USERNAME).toString(), session.getAttribute(PASSPHRASE).toString());
 			if(tempUser == null) {
-				System.out.println("about to getUserFromPassphrase");
 				tempUser = accountDao.getUserFromPassphrase(session.getAttribute(USERNAME).toString(), session.getAttribute(PASSPHRASE).toString());
 			}
 	
@@ -204,9 +209,13 @@ public class GoobersSpeechlet implements Speechlet {
 				speechOutput = "What would you like to do with your account?";
 				repromptText = speechOutput;
 			} else {
+				session.setAttribute(USERNAME, null);
+				session.setAttribute(PASSPHRASE, null);
+				session.setAttribute(SESSION_STAGE, LOGIN);
+				
 	//			else reprompt for correct pin/passphrase
-				speechOutput = "Your username and passphrase were incorrect. Please try again";
-				repromptText = "Please say your username";
+				speechOutput = "Your username and passphrase were incorrect. Please say your first name.";
+				repromptText = "Please state your username";
 	
 			}
 		}
@@ -343,12 +352,33 @@ public class GoobersSpeechlet implements Speechlet {
 
 
 	private SpeechletResponse handleViewAccountIntent(Session session) {
-		// TODO Auto-generated method stub
-		return null;
+		String speechOutput = "";
+		String repromptText = "";
+
+		// check if user is logged in
+		if(currentUser != null) {
+			// check if user has permissions
+			if(currentUser.getAccess().canViewBankBalance()) {
+				session.setAttribute(SESSION_STAGE, VIEW_BALANCE);
+				Float balance = accountDao.getAccountBalance("checking");
+				speechOutput = "Your account balance is " + balance;
+				repromptText = "What would you like to do with your account?";
+			} else {
+				speechOutput = "You do not have permission to view this account. What would you like to do with your account?";
+				repromptText = "What would you like to do with your account?";
+			}
+		} else {
+			speechOutput = "You must log in first. What is your first name?";
+			repromptText = "What is your first name?";
+		}
+
+		return newAskResponseLocal(speechOutput, repromptText);
 	}
 	
 	private SpeechletResponse handleLogoutIntent(Session session) {
 		currentUser = null;
+		
+		session.setAttribute(SESSION_STAGE, LOGIN);
 		
 		String speechOutput = "You have successfully logged out. Please state your first name.";
 		String repromptText = "Please state your first name.";
