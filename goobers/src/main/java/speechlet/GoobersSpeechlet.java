@@ -10,7 +10,6 @@ import com.amazon.speech.speechlet.SessionStartedRequest;
 import com.amazon.speech.speechlet.Speechlet;
 import com.amazon.speech.speechlet.SpeechletException;
 import com.amazon.speech.speechlet.SpeechletResponse;
-//import com.amazon.speech.speechlet.User;
 import com.amazon.speech.ui.OutputSpeech;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
 import com.amazon.speech.ui.Reprompt;
@@ -31,8 +30,10 @@ public class GoobersSpeechlet implements Speechlet {
 	private static final String AMOUNT = "amount";
 
 	private static final int LOGIN = 1;
-	private static final int BILL_PAY = 2;
-	private static final int TRANSFER = 3;
+	private static final int USERLOGIN = 2;
+	private static final int PASSLOGIN = 3;
+	private static final int BILL_PAY = 4;
+	private static final int TRANSFER = 5;
 
 	//	vars needed for this session
 	private User currentUser;
@@ -72,18 +73,20 @@ public class GoobersSpeechlet implements Speechlet {
 		String intentName = (intent != null) ? intent.getName() : null;
 
 		System.err.println("INTENT NAME: " + intentName);
-		if ("firstNameIntent".equals(intentName)) {
-//        	set the name as session variable
-        	Slot nameSlot = intent.getSlot("FirstName");
-        	String username = nameSlot.getValue();
-        	session.setAttribute(USERNAME, username);
-        	return handleNameIntent(session);
-        } else if("passPhraseIntent".equals(intentName)) {
-        	// store passphrase as a session variable
-        	Slot passSlot = intent.getSlot("PassPhrase");
-        	String phrase = passSlot.getValue();
-        	session.setAttribute(PASSPHRASE, phrase);
-        	return handlePassphraseItent(session);
+		if ("credentialIntent".equals(intentName)) {
+			if((Integer) session.getAttribute(SESSION_STAGE) == LOGIN) {
+//	        	set the name as session variable
+	        	Slot nameSlot = intent.getSlot("FirstName");
+	        	String username = nameSlot.getValue();
+	        	session.setAttribute(USERNAME, username);
+	        	return handleNameIntent(session);
+			} else {
+	        	// store passphrase as a session variable
+	        	Slot passSlot = intent.getSlot("PassPhrase");
+	        	String phrase = passSlot.getValue();
+	        	session.setAttribute(PASSPHRASE, phrase);
+	        	return handlePassphraseItent(session);
+			}
         } else if("AMAZON.NUMBER".equals(intentName)) {
         	Slot amountSlot = intent.getSlot("Amount");
         	String amountString = amountSlot.getValue();
@@ -165,6 +168,7 @@ public class GoobersSpeechlet implements Speechlet {
 		String repromptText = "";
 //		check that passphrase/pin matches
 		System.out.println("made it into handlePassphraseIntent");
+		session.setAttribute(SESSION_STAGE, PASSLOGIN);
 		
 		if(session.getAttribute(USERNAME) == null) {
 			speechOutput = "Please say your username";
@@ -209,6 +213,7 @@ public class GoobersSpeechlet implements Speechlet {
 	private SpeechletResponse handleNameIntent(Session session) {
 
 //		TODO refine phrasing?
+		session.setAttribute(SESSION_STAGE, USERLOGIN);
 		String speechOutput = "Please say your pin or passphrase";
 
 		// Reprompt speech will be triggered if the user doesn't respond.
@@ -336,6 +341,15 @@ public class GoobersSpeechlet implements Speechlet {
 	private SpeechletResponse handleViewAccountIntent(Session session) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private SpeechletResponse handleLogoutIntent(Session session) {
+		currentUser = null;
+		
+		String speechOutput = "";
+		String repromptText = "";
+		
+		return newAskResponseLocal(speechOutput, repromptText);
 	}
 
 	private SpeechletResponse newAskResponseLocal(String speechOutput, String repromptText) {
