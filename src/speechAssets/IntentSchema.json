@@ -1,0 +1,55 @@
+{
+  "intents": [
+    {
+      "intent": "viewAccountIntent",
+      "slots": [
+        {
+          "name": "AccountType",
+          "type": "LIST_OF_ACCOUNT_TYPES"
+        }
+      ]
+    },
+    {
+      "intent": "viewInsuranceIntent",
+      "slots": [
+        {
+          "name": "InsuranceType",
+          "type": "LIST_OF_INSURANCE_TYPES"
+        }
+      ]
+    },
+    {
+      "intent": "updateInsuranceIntent"
+    },
+    {
+      "intent": "removeAccountIntent"
+    },
+    {
+      "intent": "addAccountIntent"
+    },
+    {
+      "intent": "menuIntent"
+    },
+    {
+      "intent": "transferMoneyIntent"
+    },
+    {
+      "intent": "payBillIntent",
+      "slots": [
+        {
+          "name": "BillName",
+          "type": "LIST_OF_BILL_NAMES"
+        }
+      ]
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
+    }
+  ]
+}
