@@ -32,6 +32,7 @@ public class GoobersSpeechlet implements Speechlet {
 
 	private static final int LOGIN = 1;
 	private static final int BILL_PAY = 2;
+	private static final int TRANSFER = 3;
 
 	//	vars needed for this session
 	private User currentUser;
@@ -286,15 +287,32 @@ public class GoobersSpeechlet implements Speechlet {
 			repromptText = "What is your username?";
 		}
 
-
-
-		return null;
+		return newAskResponseLocal(speechOutput, repromptText);
 	}
 
 
 	private SpeechletResponse handleTransferMoneyIntent(Session session) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		String speechOutput = "";
+		String repromptText = "";
+
+		// check if user is logged in
+		if(currentUser != null) {
+			// check if user has permissions
+			if(currentUser.getAccess().canBillPay()) {
+				session.setAttribute(SESSION_STAGE, TRANSFER);
+				speechOutput = "What amount would you like to transfer?";
+				repromptText = speechOutput;
+			} else {
+				speechOutput = "You do not have permission to transfer money. What would you like to do with your account?";
+				repromptText = "What would you like to do with your account?";
+			}
+		} else {
+			speechOutput = "You must log in first. What is your username?";
+			repromptText = "What is your username?";
+		}
+
+		return newAskResponseLocal(speechOutput, repromptText);
 	}
 
 
