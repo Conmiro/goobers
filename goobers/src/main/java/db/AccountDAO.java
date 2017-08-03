@@ -40,7 +40,7 @@ public class AccountDAO {
 
 
         try {
-            PreparedStatement stmt = connection.prepareStatement("SELECT Balance FROM goobers.Bank WHERE type = (?) and Account_ID = ?;");
+            PreparedStatement stmt = connection.prepareStatement("SELECT Balance FROM goobers.Bank WHERE AccountType = '?' and Account_ID = ?;");
             stmt.setString(1, accountType);
             stmt.setInt(2, ACCOUNT_ID);
 
