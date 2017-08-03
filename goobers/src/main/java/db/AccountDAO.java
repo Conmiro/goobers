@@ -62,7 +62,7 @@ public class AccountDAO {
 
 
         try {
-            PreparedStatement stmt = connection.prepareStatement("UPDATE goobers.Bank SET Balance=? WHERE Type =? and Account_ID=?;\n");
+            PreparedStatement stmt = connection.prepareStatement("UPDATE goobers.Bank SET Balance=? WHERE AccountType =? and Account_ID=?;\n");
             stmt.setFloat(1,balance);
             stmt.setString(2,accountType);
             stmt.setInt(3, ACCOUNT_ID);
