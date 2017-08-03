@@ -1,0 +1,72 @@
+viewAccountIntent view {AccountType} account
+viewAccountIntent view {AccountType}
+viewAccountIntent {AccountType} account balance
+viewAccountIntent what is my {AccountType} balance
+viewAccountIntent what is my {AccountType} account balance
+viewAccountIntent what's my {AccountType} balance
+viewAccountIntent what's my {AccountType} account balance
+viewAccountIntent can I view {AccountType} account
+viewAccountIntent can I view {AccountType} account balance
+viewAccountIntent show me {AccountType} account balance
+viewAccountIntent show me {AccountType} balance
+viewAccountIntent tell me {AccountType} balance
+viewAccountIntent tell me {AccountType} account balance
+viewAccountIntent give me {AccountType} account balance
+viewAccountIntent give me my {AccountType} account balance
+viewAccountIntent give {AccountType} account balance
+viewAccountIntent give my {AccountType} account balance
+viewAccountIntent tell me my {AccountType} balance
+viewAccountIntent tell me my {AccountType} account balance
+
+viewInsuranceIntent view {InsuranceType} insurance
+viewInsuranceIntent view {InsuranceType} insurance policy
+viewInsuranceIntent view {InsuranceType} policy
+viewInsuranceIntent can I view my {InsuranceType} policy
+viewInsuranceIntent read me my {InsuranceType} policy
+viewInsuranceIntent tell me my {InsuranceType} policy
+viewInsuranceIntent tell me {InsuranceType} policy
+viewInsuranceIntent show me my {InsuranceType} policy
+viewInsuranceIntent show me {InsuranceType} policy
+
+transferMoneyIntent transfer money from {FromAccount} to {ToAccount}
+transferMoneyIntent move money from {ToAccount} to {FromAccount}
+transferMoneyIntent transfer money to {ToAccount}
+
+removeAccountIntent remove {UserName}
+removeAccountIntent remove {UserName} from account
+removeAccountIntent get rid of {UserName}
+
+addAccountIntent add User to account
+addAccountIntent add User
+addAccountIntent create User for account
+addAccountIntent create User
+addAccountIntent Create new User
+
+menuIntent show menu
+menuIntent view menu
+menuIntent tell me the menu options
+menuIntent give me the menu options
+menuIntent what are the menu options
+
+updateInsuranceIntent Update Insurance
+updateInsuranceIntent Edit Insurance
+updateInsuranceIntent Modify Insurance
+updateInsuranceIntent Update my Insurance
+updateInsuranceIntent Edit my Insurance
+updateInsuranceIntent Modify my Insurance
+updateInsuranceIntent Update our Insurance
+updateInsuranceIntent Edit our Insurance
+updateInsuranceIntent Modify our Insurance
+updateInsuranceIntent Change my Insurance
+updateInsuranceIntent Change Insurance
+updateInsuranceIntent Modify our Insurance
+
+amountIntent {Amount}
+
+payBillIntent pay Bill
+payBillIntent pay Bills
+payBillIntent pay my Bill
+
+getNameIntent {FirstName}
+
+passPhraseIntent {PassPhrase}

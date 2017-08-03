@@ -1,0 +1,82 @@
+{
+  "intents": [
+    {
+      "intent": "viewAccountIntent",
+      "slots": [
+        {
+          "name": "AccountType",
+          "type": "LIST_OF_ACCOUNT_TYPES"
+        }
+      ]
+    },
+    {
+      "intent": "viewInsuranceIntent",
+      "slots": [
+        {
+          "name": "InsuranceType",
+          "type": "LIST_OF_INSURANCE_TYPES"
+        }
+      ]
+    },
+    {
+      "intent": "updateInsuranceIntent"
+    },
+    {
+      "intent": "removeAccountIntent",
+      "slots": [
+        {
+          "name": "UserName",
+          "type": "LIST_OF_FIRST_NAMES"
+        }
+      ]
+    },
+    {
+      "intent": "addAccountIntent"
+    },
+    {
+      "intent": "menuIntent"
+    },
+    {
+      "intent": "transferMoneyIntent"
+    },
+    {
+      "intent": "payBillIntent"
+    },
+    {
+      "intent": "amountIntent",
+      "slots": [
+        {
+          "name": "Amount",
+          "type": "AMAZON.NUMBER"
+        }
+      ]
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
+    },
+    {
+      "intent": "firstNameIntent",
+      "slots": [
+        {
+          "name": "FirstName",
+          "type": "LIST_OF_FIRST_NAMES"
+        }
+      ]
+    },
+    {
+      "intent": "passPhraseIntent",
+      "slots": [
+        {
+          "name": "PassPhrase",
+          "type": "LIST_OF_PASSPHRASES"
+        }
+      ]
+    }
+  ]
+}
