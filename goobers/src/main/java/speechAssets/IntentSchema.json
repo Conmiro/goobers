@@ -1,34 +1,34 @@
 {
   "intents": [
     {
-      "intent": "viewAccountIntent",
       "slots": [
         {
           "name": "AccountType",
           "type": "LIST_OF_ACCOUNT_TYPES"
         }
-      ]
+      ],
+      "intent": "viewAccountIntent"
     },
     {
-      "intent": "viewInsuranceIntent",
       "slots": [
         {
           "name": "InsuranceType",
           "type": "LIST_OF_INSURANCE_TYPES"
         }
-      ]
+      ],
+      "intent": "viewInsuranceIntent"
     },
     {
       "intent": "updateInsuranceIntent"
     },
     {
-      "intent": "removeAccountIntent",
       "slots": [
         {
           "name": "UserName",
           "type": "LIST_OF_FIRST_NAMES"
         }
-      ]
+      ],
+      "intent": "removeAccountIntent"
     },
     {
       "intent": "addAccountIntent"
@@ -37,19 +37,29 @@
       "intent": "menuIntent"
     },
     {
+      "slots": [
+        {
+          "name": "FromAccount",
+          "type": "LIST_OF_ACCOUNT_TYPES"
+        },
+        {
+          "name": "ToAccount",
+          "type": "LIST_OF_ACCOUNT_TYPES"
+        }
+      ],
       "intent": "transferMoneyIntent"
     },
     {
       "intent": "payBillIntent"
     },
     {
-      "intent": "amountIntent",
       "slots": [
         {
           "name": "Amount",
           "type": "AMAZON.NUMBER"
         }
-      ]
+      ],
+      "intent": "amountIntent"
     },
     {
       "intent": "AMAZON.HelpIntent"
@@ -61,22 +71,22 @@
       "intent": "AMAZON.CancelIntent"
     },
     {
-      "intent": "firstNameIntent",
       "slots": [
         {
           "name": "FirstName",
           "type": "LIST_OF_FIRST_NAMES"
         }
-      ]
+      ],
+      "intent": "firstNameIntent"
     },
     {
-      "intent": "passPhraseIntent",
       "slots": [
         {
           "name": "PassPhrase",
           "type": "LIST_OF_PASSPHRASES"
         }
-      ]
+      ],
+      "intent": "passPhraseIntent"
     }
   ]
 }

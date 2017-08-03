@@ -17,7 +17,6 @@ viewAccountIntent give {AccountType} account balance
 viewAccountIntent give my {AccountType} account balance
 viewAccountIntent tell me my {AccountType} balance
 viewAccountIntent tell me my {AccountType} account balance
-
 viewInsuranceIntent view {InsuranceType} insurance
 viewInsuranceIntent view {InsuranceType} insurance policy
 viewInsuranceIntent view {InsuranceType} policy
@@ -27,27 +26,6 @@ viewInsuranceIntent tell me my {InsuranceType} policy
 viewInsuranceIntent tell me {InsuranceType} policy
 viewInsuranceIntent show me my {InsuranceType} policy
 viewInsuranceIntent show me {InsuranceType} policy
-
-transferMoneyIntent transfer money from {FromAccount} to {ToAccount}
-transferMoneyIntent move money from {ToAccount} to {FromAccount}
-transferMoneyIntent transfer money to {ToAccount}
-
-removeAccountIntent remove {UserName}
-removeAccountIntent remove {UserName} from account
-removeAccountIntent get rid of {UserName}
-
-addAccountIntent add User to account
-addAccountIntent add User
-addAccountIntent create User for account
-addAccountIntent create User
-addAccountIntent Create new User
-
-menuIntent show menu
-menuIntent view menu
-menuIntent tell me the menu options
-menuIntent give me the menu options
-menuIntent what are the menu options
-
 updateInsuranceIntent Update Insurance
 updateInsuranceIntent Edit Insurance
 updateInsuranceIntent Modify Insurance
@@ -60,13 +38,25 @@ updateInsuranceIntent Modify our Insurance
 updateInsuranceIntent Change my Insurance
 updateInsuranceIntent Change Insurance
 updateInsuranceIntent Modify our Insurance
-
-amountIntent {Amount}
-
+removeAccountIntent remove {UserName}
+removeAccountIntent remove {UserName} from account
+removeAccountIntent get rid of {UserName}
+addAccountIntent add User to account
+addAccountIntent add User
+addAccountIntent create User for account
+addAccountIntent create User
+addAccountIntent Create new User
+menuIntent show menu
+menuIntent view menu
+menuIntent tell me the menu options
+menuIntent give me the menu options
+menuIntent what are the menu options
+transferMoneyIntent transfer money from {FromAccount} to {ToAccount}
+transferMoneyIntent move money from {ToAccount} to {FromAccount}
+transferMoneyIntent transfer money to {ToAccount}
 payBillIntent pay Bill
 payBillIntent pay Bills
 payBillIntent pay my Bill
-
-getNameIntent {FirstName}
-
+amountIntent {Amount}
+firstNameIntent {FirstName}
 passPhraseIntent {PassPhrase}
