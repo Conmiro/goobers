@@ -1,19 +1,22 @@
 package com.goobers.db;
 
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import com.goobers.model.User;
 import com.goobers.perms.Manage;
 import com.goobers.perms.View;
-
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AccountDAO {
 
     private Connection connection = null;
 
     private static final int ACCOUNT_ID = 1;
+    private static final String CAR_NAME = "Mercedes 2018";
 
     public AccountDAO() {
 
@@ -32,40 +35,100 @@ public class AccountDAO {
     }
 
 
-    public int getAccountBalance(String accountType) {
+    public float getAccountBalance(String accountType) {
+
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement("SELECT Balance FROM goobers.Bank WHERE type = (?) and Account_ID = ?;");
+            stmt.setString(1, accountType);
+            stmt.setInt(2, ACCOUNT_ID);
+
+            ResultSet rs = stmt.executeQuery();
+
+            rs.next();
+
+            return rs.getFloat("Balance");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
 
 
 
-        return 0;
     }
 
-    public void transferFunds(String fromAccount, String toAccount) {
+    public void setAccountBalance(String accountType, Float balance) {
 
 
+        try {
+            PreparedStatement stmt = connection.prepareStatement("UPDATE goobers.Bank SET Balance=? WHERE Type =? and Account_ID=?;\n");
+            stmt.setFloat(1,balance);
+            stmt.setString(2,accountType);
+            stmt.setInt(3, ACCOUNT_ID);
 
+            stmt.execute();
+
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     /**
      *
      * @return Full or Liability
      */
-    public String getInsuranceLevel() {
+    public String getInsuranceType() {
 
+        try {
+            PreparedStatement stmt = connection.prepareStatement("SELECT PolicyType from goobers.Insurance where Insurance_AccountID = ? and Vehicle = ?;");
+            stmt.setInt(1, ACCOUNT_ID);
+            stmt.setString(2, CAR_NAME);
+
+            ResultSet rs = stmt.executeQuery();
+            rs.next();
+
+            return rs.getString("PolicyType");
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         return "";
     }
 
-    public void addUser(User user) {
+    public void setInsuranceType(String type) {
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement("UPDATE goobers.Insurance SET PolicyType=? WHERE Vehicle = ? and Account_ID=?;\n");
+            stmt.setString(1,type);
+            stmt.setString(2, CAR_NAME);
+            stmt.setInt(3, ACCOUNT_ID);
+
+            stmt.execute();
+
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+    }
+
+    public void addUser(User user, boolean canManage) {
         try {
 
             PreparedStatement stmt = connection.prepareStatement(
-                    "INSERT INTO goobers.User (UserName,PassPhrase,PIN,AccountID)\n" +
-                            "VALUES (?,?,?,?);");
+                    "INSERT INTO goobers.User (UserName,PassPhrase,PIN,AccountID,CanManage)\n" +
+                            "VALUES (?,?,?,?,?);");
 
             stmt.setString(1,user.getUserName());
             stmt.setString(2, user.getPassPhrase() );
             stmt.setString(3, user.getPin());
             stmt.setInt(4,ACCOUNT_ID);
+            if (canManage) {
+                stmt.setInt(5, 1);
+            }else {
+                stmt.setInt(5, 0);
+            }
 
             stmt.execute();
 
@@ -77,26 +140,48 @@ public class AccountDAO {
     }
 
     public void removeUser(User user) {
-    	
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement("DELETE FROM `goobers`.`User` WHERE UserName=?;\n");
+            stmt.setString(1, user.getUserName());
+
+            stmt.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
 
     }
 
-    /**
-     *
-     * @param type Full or Liability
-     */
-    public void updateInsurance(String type) {
+    public float getBillBalance(String billName) {
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement("SELECT Amount\n" +
+                    "FROM Account_Bill\n" +
+                    "INNER JOIN Bill ON Account_Bill.Account_Bill_BillID = Bill.BillID\n" +
+                    "WHERE BillName = ? and Account_Bill.Account_Bill_AccountID = ?;");
+            stmt.setString(1, billName);
+            stmt.setInt(2, ACCOUNT_ID);
+
+            ResultSet rs = stmt.executeQuery();
+            rs.next();
+
+            return rs.getFloat("Amount");
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+
+
 
     }
 
-    public void payBill(String name, int amount) {
-
-    }
 
     public User getUserFromPassphrase(String name, String passphrase) {
     	User theUser =  null;
         try {
-
             PreparedStatement stmt = connection.prepareStatement(
                     "SELECT * FROM USER WHERE UserName = ? AND Passphrase = ?");
 
@@ -128,6 +213,29 @@ public class AccountDAO {
 		return theUser;
     	
     }
+        
+    public void setBillBalance(String name, float amount) {
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement("Update Account_Bill\n" +
+                    "Inner Join Bill on Account_Bill.Account_Bill_BillID = Bill.BillID\n" +
+                    "Set Amount = ? \n" +
+                    "Where Bill.BillName = ? and Account_Bill.Account_Bill_AccountID = ?;");
+
+            stmt.setFloat(1, amount);
+            stmt.setString(2, name);
+            stmt.setInt(3, ACCOUNT_ID);
+
+            stmt.execute();
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+
     
     public User getUserFromPin(String name, String passphrase) {
 		return null;
