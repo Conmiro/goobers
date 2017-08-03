@@ -257,6 +257,7 @@ public class GoobersSpeechlet implements Speechlet {
 		PlainTextOutputSpeech outputSpeech = new PlainTextOutputSpeech();
 		outputSpeech.setText("Goodbye");
 		currentUser = null;
+		session.setAttribute(SESSION_STAGE, LOGIN);
 
 		return SpeechletResponse.newTellResponse(outputSpeech);
 	}
@@ -266,6 +267,7 @@ public class GoobersSpeechlet implements Speechlet {
 		PlainTextOutputSpeech outputSpeech = new PlainTextOutputSpeech();
 		outputSpeech.setText("Goodbye");
 		currentUser = null;
+		session.setAttribute(SESSION_STAGE, LOGIN);
 
 		return SpeechletResponse.newTellResponse(outputSpeech);
 	}
