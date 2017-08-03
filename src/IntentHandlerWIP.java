@@ -42,7 +42,7 @@ public class IntentHandlerWIP implements Speechlet {
 	private SpeechletResponse accountLoginStart(Session session) {
 		String speechOutput = "";
 
-        // Reprompt speech will be triggered if the user doesn't respond.
+        // Reprompt com.amazon.speech will be triggered if the user doesn't respond.
         String repromptText = "What is your account's nickname?";
 
         // The stage variable tracks the phase of the dialogue.
