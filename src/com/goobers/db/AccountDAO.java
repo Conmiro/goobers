@@ -138,6 +138,46 @@ public class AccountDAO {
 
 
     }
+	
+	public boolean getUser(User user) {
+        try {
+
+            PreparedStatement stmt = connection.prepareStatement(
+                    "SELECT CanManage FROM goobers.User \n " +
+					"WHERE UserName = '?' ";
+
+            stmt.setString(1,user.getUserName());
+
+            ResultSet rs = stmt.executeQuery();
+            rs.next();
+            if(rs.getInt("CanManage") = 1){
+				return true;
+			}
+			else{
+				return false;
+			}
+			
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    public void removeUser(User user) {
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement("DELETE FROM `goobers`.`User` WHERE UserName=?;\n");
+            stmt.setString(1, user.getUserName());
+
+            stmt.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+    }
 
     public void removeUser(User user) {
 
