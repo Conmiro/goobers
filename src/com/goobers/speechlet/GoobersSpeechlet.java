@@ -88,7 +88,7 @@ public class GoobersSpeechlet implements Speechlet {
         	Slot amountSlot = intent.getSlot("Amount");
         	String amountString = amountSlot.getValue();
         	session.setAttribute(AMOUNT, amountString);
-        	if(session.getAttribute(SESSION_STAGE).equals(BILL_PAY)) {
+        	if((Integer) session.getAttribute(SESSION_STAGE) == BILL_PAY) {
         		return handleBillPayExecute(session);
         	} else {
         		return handleTransferMoneyExecute(session);
@@ -120,7 +120,7 @@ public class GoobersSpeechlet implements Speechlet {
             if (session.getAttributes().containsKey(SESSION_STAGE)) {
                 stage = (Integer) session.getAttribute(SESSION_STAGE);
             }
-//            TODO update these
+//          TODO update these
             switch (stage) {
                 case 0:
                     speechOutput =
@@ -164,9 +164,9 @@ public class GoobersSpeechlet implements Speechlet {
 		String speechOutput = "";
 		String repromptText = "";
 //		check that passphrase/pin matches
-		User tempUser = accountDao.getUserFromPassphrase(session.getAttribute(USERNAME).toString(), session.getAttribute(PASSPHRASE).toString());
+		User tempUser = accountDao.getUserFromPin(session.getAttribute(USERNAME).toString(), session.getAttribute(PASSPHRASE).toString());
 		if(tempUser == null) {
-			tempUser = accountDao.getUserFromPin(session.getAttribute(USERNAME).toString(), session.getAttribute(PASSPHRASE).toString());
+			tempUser = accountDao.getUserFromPassphrase(session.getAttribute(USERNAME).toString(), session.getAttribute(PASSPHRASE).toString());
 		}
 		
 		if(tempUser != null) {
@@ -175,7 +175,7 @@ public class GoobersSpeechlet implements Speechlet {
 
 			if(tempUser.isOwner()) {
 //				check if the passphrase matches the pin or the passphrase
-				if("<passphrase goes here>".equals(tempUser.getPin())) {
+				if(session.getAttribute(PASSPHRASE).equals(tempUser.getPin())) {
 					currentUser = tempUser;
 				} else {
 					currentUser = new User(tempUser.getUserName(), tempUser.getPassPhrase(), tempUser.getPin(), new View(), tempUser.isOwner());
@@ -276,10 +276,11 @@ public class GoobersSpeechlet implements Speechlet {
 		if(currentUser != null) {
 			// check if user has permissions
 			if(currentUser.getAccess().canBillPay()) {
+				session.setAttribute(SESSION_STAGE, BILL_PAY);
 				speechOutput = "What amount would you like to pay?";
 				repromptText = speechOutput;
 			} else {
-				speechOutput = "You do not have permission to bill pay. What would you like to do with your account?";
+				speechOutput = "You do not have permission to pay bills. What would you like to do with your account?";
 				repromptText = "What would you like to do with your account?";
 			}
 		} else {

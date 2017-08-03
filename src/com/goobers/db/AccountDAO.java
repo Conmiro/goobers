@@ -234,12 +234,38 @@ public class AccountDAO {
 
     }
 
-
-
-    
     public User getUserFromPin(String name, String passphrase) {
-		return null;
-    
+    	User theUser =  null;
+        try {
+            PreparedStatement stmt = connection.prepareStatement(
+                    "SELECT * FROM USER WHERE UserName = ? AND PIN = ?");
+
+            stmt.setString(1, name);
+            stmt.setString(2, passphrase);
+
+            ResultSet rs = stmt.executeQuery();
+            
+            String userName = rs.getString("UserName");
+            String passPhrase = rs.getString("Passphrase");
+            String pin = rs.getString("PIN");
+            boolean canManage = rs.getBoolean("CanManage");
+            boolean isOwner = false;
+            if(pin != null) {
+            	isOwner = true;
+            }
+            
+//          create the user
+            if(canManage) {
+            	theUser = new User(userName, passPhrase, pin, new Manage(), isOwner);
+            } else {
+            	theUser = new User(userName, passPhrase, pin, new View(), isOwner);
+            }
+                        
+        } catch (SQLException e) {
+//        	return null;
+            e.printStackTrace();
+        }
+		return theUser;
     }
 
 
