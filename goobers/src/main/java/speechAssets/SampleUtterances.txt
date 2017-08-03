@@ -61,5 +61,12 @@ updateInsuranceIntent Change my Insurance
 updateInsuranceIntent Change Insurance
 updateInsuranceIntent Modify our Insurance
 
-billPayIntent pay {BillName}
-billPayIntent pay my {BillName}
+amountIntent {Amount}
+
+payBillIntent pay Bill
+payBillIntent pay Bills
+payBillIntent pay my Bill
+
+getNameIntent {FirstName}
+
+passPhraseIntent {PassPhrase}

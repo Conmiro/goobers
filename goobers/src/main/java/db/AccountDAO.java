@@ -2,8 +2,15 @@ package main.java.db;
 
 
 import main.java.model.User;
+import main.java.perms.Manage;
+import main.java.perms.View;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 
 public class AccountDAO {
 
@@ -132,6 +139,33 @@ public class AccountDAO {
 
 
     }
+	
+	public boolean canUserManage(User user) {
+        try {
+
+            PreparedStatement stmt = connection.prepareStatement(
+                    "SELECT CanManage FROM goobers.User \n " +
+					"WHERE UserName = ? ") ;
+
+            stmt.setString(1,user.getUserName());
+
+            ResultSet rs = stmt.executeQuery();
+            rs.next();
+            if(rs.getInt("CanManage") == 1){
+				return true;
+			}
+			else{
+				return false;
+			}
+			
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+
+        }
+
+
+    }
 
     public void removeUser(User user) {
 
@@ -172,6 +206,42 @@ public class AccountDAO {
 
     }
 
+
+    public User getUserFromPassphrase(String name, String passphrase) {
+    	User theUser =  null;
+        try {
+            PreparedStatement stmt = connection.prepareStatement(
+                    "SELECT * FROM USER WHERE UserName = ? AND Passphrase = ?");
+
+            stmt.setString(1, name);
+            stmt.setString(2, passphrase);
+
+            ResultSet rs = stmt.executeQuery();
+            
+            String userName = rs.getString("UserName");
+            String passPhrase = rs.getString("Passphrase");
+            String pin = rs.getString("PIN");
+            boolean canManage = rs.getBoolean("CanManage");
+            boolean isOwner = false;
+            if(pin != null) {
+            	isOwner = true;
+            }
+            
+//          create the user
+            if(canManage) {
+            	theUser = new User(userName, passPhrase, pin, new Manage(), isOwner);
+            } else {
+            	theUser = new User(userName, passPhrase, pin, new View(), isOwner);
+            }
+                        
+        } catch (SQLException e) {
+//        	return null;
+            e.printStackTrace();
+        }
+		return theUser;
+    	
+    }
+        
     public void setBillBalance(String name, float amount) {
 
         try {
@@ -192,6 +262,13 @@ public class AccountDAO {
 
     }
 
+
+
+    
+    public User getUserFromPin(String name, String passphrase) {
+		return null;
+    
+    }
 
 
 }

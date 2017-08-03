@@ -22,7 +22,13 @@
       "intent": "updateInsuranceIntent"
     },
     {
-      "intent": "removeAccountIntent"
+      "intent": "removeAccountIntent",
+      "slots": [
+        {
+          "name": "UserName",
+          "type": "LIST_OF_FIRST_NAMES"
+        }
+      ]
     },
     {
       "intent": "addAccountIntent"
@@ -34,11 +40,14 @@
       "intent": "transferMoneyIntent"
     },
     {
-      "intent": "payBillIntent",
+      "intent": "payBillIntent"
+    },
+    {
+      "intent": "amountIntent",
       "slots": [
         {
-          "name": "BillName",
-          "type": "LIST_OF_BILL_NAMES"
+          "name": "Amount",
+          "type": "AMAZON.NUMBER"
         }
       ]
     },
@@ -50,6 +59,24 @@
     },
     {
       "intent": "AMAZON.CancelIntent"
+    },
+    {
+      "intent": "firstNameIntent",
+      "slots": [
+        {
+          "name": "FirstName",
+          "type": "LIST_OF_FIRST_NAMES"
+        }
+      ]
+    },
+    {
+      "intent": "passPhraseIntent",
+      "slots": [
+        {
+          "name": "PassPhrase",
+          "type": "LIST_OF_PASSPHRASES"
+        }
+      ]
     }
   ]
 }
