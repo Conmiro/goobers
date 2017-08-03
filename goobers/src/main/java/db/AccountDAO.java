@@ -211,13 +211,14 @@ public class AccountDAO {
     	User theUser =  null;
         try {
             PreparedStatement stmt = connection.prepareStatement(
-                    "SELECT * FROM USER WHERE UserName = ? AND Passphrase = ?");
+                    "SELECT * FROM goobers.User WHERE UserName = ? AND Passphrase = ?");
 
             stmt.setString(1, name);
             stmt.setString(2, passphrase);
 
             ResultSet rs = stmt.executeQuery();
-            
+
+            rs.next();
             String userName = rs.getString("UserName");
             String passPhrase = rs.getString("Passphrase");
             String pin = rs.getString("PIN");
@@ -266,13 +267,14 @@ public class AccountDAO {
     	User theUser =  null;
         try {
             PreparedStatement stmt = connection.prepareStatement(
-                    "SELECT * FROM USER WHERE UserName = ? AND PIN = ?");
+                    "SELECT * FROM goobers.User WHERE UserName = ? AND PIN = ?");
 
             stmt.setString(1, name);
             stmt.setString(2, passphrase);
 
             ResultSet rs = stmt.executeQuery();
-            
+
+            rs.next();
             String userName = rs.getString("UserName");
             String passPhrase = rs.getString("Passphrase");
             String pin = rs.getString("PIN");
