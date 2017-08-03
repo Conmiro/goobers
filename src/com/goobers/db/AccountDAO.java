@@ -109,17 +109,22 @@ public class AccountDAO {
 
     }
 
-    public void addUser(User user) {
+    public void addUser(User user, boolean canManage) {
         try {
 
             PreparedStatement stmt = connection.prepareStatement(
-                    "INSERT INTO goobers.User (UserName,PassPhrase,PIN,AccountID)\n" +
-                            "VALUES (?,?,?,?);");
+                    "INSERT INTO goobers.User (UserName,PassPhrase,PIN,AccountID,CanManage)\n" +
+                            "VALUES (?,?,?,?,?);");
 
             stmt.setString(1,user.getUserName());
             stmt.setString(2, user.getPassPhrase() );
             stmt.setString(3, user.getPin());
             stmt.setInt(4,ACCOUNT_ID);
+            if (canManage) {
+                stmt.setInt(5, 1);
+            }else {
+                stmt.setInt(5, 0);
+            }
 
             stmt.execute();
 
