@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * A superclass for Playback com.goobers.db.Controller requests.
+ * A superclass for Playback com.goobers.Controller requests.
  */
 public class PlaybackControllerRequest extends SpeechletRequest {
     protected PlaybackControllerRequest(SpeechletRequestBuilder builder) {

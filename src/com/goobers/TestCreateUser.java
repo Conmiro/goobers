@@ -1,4 +1,4 @@
-package com.goobers.db;
+package com.goobers;
 
 import static org.junit.Assert.*;
 

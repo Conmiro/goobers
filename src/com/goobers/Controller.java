@@ -1,4 +1,4 @@
-package com.goobers.db;
+package com.goobers;
 
 import com.goobers.perms.Manage;
 import com.goobers.resource.Account;
