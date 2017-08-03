@@ -82,12 +82,15 @@ public class AccountDAO {
         try {
 
             PreparedStatement stmt = connection.prepareStatement(
-                    "INSERT INTO goobers.com.goobers.model.User (UserName,PassPhrase,PIN,AccountID)\n" +
+                    "INSERT INTO goobers.User (UserName,PassPhrase,PIN,AccountID)\n" +
                             "VALUES (?,?,?,?);");
 
             stmt.setString(1,user.getUserName());
             stmt.setString(2, user.getPassPhrase() );
             stmt.setString(3, user.getPin());
+            stmt.setInt(4,ACCOUNT_ID);
+
+            stmt.execute();
 
         } catch (SQLException e) {
             e.printStackTrace();
