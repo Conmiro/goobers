@@ -221,14 +221,14 @@ public class AccountDAO {
             String userName = rs.getString("UserName");
             String passPhrase = rs.getString("Passphrase");
             String pin = rs.getString("PIN");
-            boolean canManage = rs.getBoolean("CanManage");
+            int canManage = rs.getInt("CanManage");
             boolean isOwner = false;
             if(pin != null) {
             	isOwner = true;
             }
             
 //          create the user
-            if(canManage) {
+            if(canManage == 1) {
             	theUser = new User(userName, passPhrase, pin, new Manage(), isOwner);
             } else {
             	theUser = new User(userName, passPhrase, pin, new View(), isOwner);
@@ -276,14 +276,14 @@ public class AccountDAO {
             String userName = rs.getString("UserName");
             String passPhrase = rs.getString("Passphrase");
             String pin = rs.getString("PIN");
-            boolean canManage = rs.getBoolean("CanManage");
+            int canManage = rs.getInt("CanManage");
             boolean isOwner = false;
             if(pin != null) {
             	isOwner = true;
             }
             
 //          create the user
-            if(canManage) {
+            if(canManage == 1) {
             	theUser = new User(userName, passPhrase, pin, new Manage(), isOwner);
             } else {
             	theUser = new User(userName, passPhrase, pin, new View(), isOwner);
