@@ -38,8 +38,8 @@ public class GoobersSpeechlet implements Speechlet {
 	private static final int VIEW_BALANCE = 6;
 
 	//	vars needed for this session
-	private User currentUser;
-	private AccountDAO accountDao;
+	private User currentUser = null;
+	private AccountDAO accountDao = null;
 
 	@Override
 	public void onSessionStarted(SessionStartedRequest request, Session session) throws SpeechletException {
@@ -302,7 +302,7 @@ public class GoobersSpeechlet implements Speechlet {
 		String speechOutput = "";
 		String repromptText = "";
 
-		System.out.println("current User ", currentUser);
+		System.out.println("current User " + currentUser);
 
 		// check if user is logged in
 		if(currentUser != null) {
