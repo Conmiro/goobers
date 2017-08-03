@@ -2,6 +2,8 @@ package com.goobers.db;
 
 
 import com.goobers.model.User;
+import com.goobers.perms.Manage;
+import com.goobers.perms.View;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -75,7 +77,7 @@ public class AccountDAO {
     }
 
     public void removeUser(User user) {
-
+    	
 
     }
 
@@ -91,7 +93,46 @@ public class AccountDAO {
 
     }
 
+    public User getUserFromPassphrase(String name, String passphrase) {
+    	User theUser =  null;
+        try {
 
+            PreparedStatement stmt = connection.prepareStatement(
+                    "SELECT * FROM USER WHERE UserName = ? AND Passphrase = ?");
+
+            stmt.setString(1, name);
+            stmt.setString(2, passphrase);
+
+            ResultSet rs = stmt.executeQuery();
+            
+            String userName = rs.getString("UserName");
+            String passPhrase = rs.getString("Passphrase");
+            String pin = rs.getString("PIN");
+            boolean canManage = rs.getBoolean("CanManage");
+            boolean isOwner = false;
+            if(pin != null) {
+            	isOwner = true;
+            }
+            
+//          create the user
+            if(canManage) {
+            	theUser = new User(userName, passPhrase, pin, new Manage(), isOwner);
+            } else {
+            	theUser = new User(userName, passPhrase, pin, new View(), isOwner);
+            }
+                        
+        } catch (SQLException e) {
+//        	return null;
+            e.printStackTrace();
+        }
+		return theUser;
+    	
+    }
+    
+    public User getUserFromPin(String name, String passphrase) {
+		return null;
+    
+    }
 
 
 }
