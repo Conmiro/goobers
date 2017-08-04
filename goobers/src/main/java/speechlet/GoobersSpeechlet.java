@@ -16,6 +16,7 @@ import com.amazon.speech.ui.Reprompt;
 
 import main.java.db.AccountDAO;
 import main.java.model.User;
+import main.java.perms.Manage;
 import main.java.perms.View;
 
 /**
@@ -29,6 +30,7 @@ public class GoobersSpeechlet implements Speechlet {
 	private static final String USERNAME = "username";
 	private static final String PASSPHRASE = "passphrase";
 	private static final String AMOUNT = "amount";
+	private static final String CREDS = "credentials";
 
 	private static final int LOGIN = 1;
 	private static final int USERLOGIN = 2;
@@ -36,6 +38,10 @@ public class GoobersSpeechlet implements Speechlet {
 	private static final int BILL_PAY = 4;
 	private static final int TRANSFER = 5;
 	private static final int VIEW_BALANCE = 6;
+	private static final int ADD_USER_NAME = 7;
+	private static final int ADD_USER_PASS = 8;
+	private static final int ADD_USER_CREDS = 9;
+	private static final int CREATE_NEW_USER = 10;
 
 	//	vars needed for this session
 	private User currentUser;
@@ -81,6 +87,23 @@ public class GoobersSpeechlet implements Speechlet {
 	        	String username = nameSlot.getValue();
 	        	session.setAttribute(USERNAME, username);
 	        	return handleNameIntent(session);
+			} else if((Integer) session.getAttribute(SESSION_STAGE) == ADD_USER_NAME) {
+//	        	set the name as session variable
+	        	Slot nameSlot = intent.getSlot("Credential");
+	        	String username = nameSlot.getValue();
+	        	session.setAttribute(USERNAME, username);
+	        	return handleAddUserPassIntent(session);
+			} else if((Integer) session.getAttribute(SESSION_STAGE) == ADD_USER_PASS) {
+//	        	set the passphrase as session variable
+	        	Slot passSlot = intent.getSlot("Credential");
+	        	String passphrase = passSlot.getValue();
+	        	session.setAttribute(PASSPHRASE, passphrase);
+	        	return handleUserCredsIntent(session);
+			} else if ((Integer) session.getAttribute(SESSION_STAGE) == CREATE_NEW_USER) {
+				Slot credSlot = intent.getSlot("Credential");
+	        	String credLevel = credSlot.getValue();
+	        	session.setAttribute(CREDS, credLevel);
+	        	return handleActuallyCreateNewUserIntent(session);
 			} else {
 	        	// store passphrase as a session variable
 	        	Slot passSlot = intent.getSlot("Credential");
@@ -153,6 +176,59 @@ public class GoobersSpeechlet implements Speechlet {
         }
 	}
 	
+	private SpeechletResponse handleActuallyCreateNewUserIntent(Session session) {
+		
+		String speechOutput = "";
+		String repromptText = "";
+		String credLevel = session.getAttribute(CREDS).toString();
+		String newName = session.getAttribute(USERNAME).toString();
+		String newPassphrase = session.getAttribute(PASSPHRASE).toString();
+		
+		if(credLevel.equals("Manage")) {
+			User newUser = new User(newName, newPassphrase, null, new Manage(), false);
+			accountDao.addUser(newUser, true);
+			session.setAttribute(SESSION_STAGE, null);
+			speechOutput = "You have successfully added " + newName + " to your account. What would you like to do with your account?";
+			repromptText = "What would you like to do with your account?";
+		} else if(credLevel.equals("View")) {
+			User newUser = new User(newName, newPassphrase, null, new View(), false);
+			accountDao.addUser(newUser, false);
+			session.setAttribute(SESSION_STAGE, null);
+			speechOutput = "You have successfully added " + newName + " to your account. What would you like to do with your account?";
+			repromptText = "What would you like to do with your account?";
+		} else {
+			speechOutput = "I'm sorry, but you must choose a valid permissions level. Please say Manage or View.";
+			repromptText = "Please say Manage or View.";
+		}
+		
+		return newAskResponseLocal(speechOutput, repromptText);
+	}
+
+
+	private SpeechletResponse handleUserCredsIntent(Session session) {
+		
+		session.setAttribute(SESSION_STAGE, ADD_USER_CREDS);
+		
+		String speechOutput = "What permissions level would you like this user to have? Say Manage or View.";
+		String repromptText = "Please say Manage or View.";
+		
+		return newAskResponseLocal(speechOutput, repromptText);
+	}
+
+
+	private SpeechletResponse handleAddUserPassIntent(Session session) {
+		
+		session.setAttribute(SESSION_STAGE, ADD_USER_PASS);
+		
+		String newName = session.getAttribute(USERNAME).toString();
+		
+		String speechOutput = "What is the pass phrase associated with " + newName + " ?";
+		String repromptText = "What is the pass phrase associated with " + newName + " ?";
+		
+		return newAskResponseLocal(speechOutput, repromptText);
+	}
+
+
 	private SpeechletResponse handleNameIntent(Session session) {
 
 		session.setAttribute(SESSION_STAGE, USERLOGIN);
@@ -203,7 +279,7 @@ public class GoobersSpeechlet implements Speechlet {
 				
 	//			else reprompt for correct pin/passphrase
 				speechOutput = "Your username and passphrase were incorrect. Please say your first name.";
-				repromptText = "Please state your username";
+				repromptText = "Please say your first name";
 	
 			}
 		}
@@ -218,7 +294,6 @@ public class GoobersSpeechlet implements Speechlet {
 		return null;
 	}
 
-
 	private SpeechletResponse handleBillPayExecute(Session session) {
 
 		int amount = Integer.parseInt(session.getAttribute(AMOUNT).toString());
@@ -232,15 +307,13 @@ public class GoobersSpeechlet implements Speechlet {
 		
 		return newAskResponseLocal(speechOutput, repromptText);
 	}
-
-
-
+	
 
 	private SpeechletResponse handleUpdateInsuranceYesIntent(Session session) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 
 	private SpeechletResponse handleMenuIntent(Session session) {
 		if(currentUser != null) {
@@ -273,13 +346,21 @@ public class GoobersSpeechlet implements Speechlet {
 		String speechOutput = "";
 		String repromptText = "";
 		
-		if(currentUser != null && currentUser.isOwner()) {
-//			TODO get new user name
+		if(currentUser != null) {
+			if(currentUser.isOwner()) {
+//				route to getting user name
+				session.setAttribute(SESSION_STAGE, ADD_USER_NAME);
+				speechOutput = "What is the new user's name?";
+				repromptText = speechOutput;
+			} else {
+				speechOutput = "You do not have permission to add a new user. What would you like to do with this account?";
+				repromptText = "What would you like to do with your account?";
+			}
 			
 		} else {
-			
+			speechOutput = "You must log in to add a new user. Please say your first name.";
+			repromptText = "Please say your first name.";
 		}
-
 
 		return newAskResponseLocal(speechOutput, repromptText);
 	}
