@@ -48,7 +48,17 @@ public class Custom implements PermissionCheck {
 	public boolean canChangePolicy() {
 		return changePolicy;
 	}
-	
+
+	@Override
+	public boolean canAddUser() {
+		return false;
+	}
+
+	@Override
+	public boolean canRemoveUser() {
+		return false;
+	}
+
 	public void setChangePolicy(boolean canChangePolicy) {
 		this.changePolicy = canChangePolicy;
 	}
