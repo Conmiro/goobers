@@ -42,6 +42,8 @@ public class GoobersSpeechlet implements Speechlet {
 	private static final int ADD_USER_PASS = 8;
 	private static final int ADD_USER_CREDS = 9;
 	private static final int CREATE_NEW_USER = 10;
+	private static final int REM_USER_NAME = 11;
+	private static final int REM_USER_PASS = 12;
 
 	//	vars needed for this session
 	private User currentUser;
@@ -112,7 +114,21 @@ public class GoobersSpeechlet implements Speechlet {
 	        	String phrase = passSlot.getValue();
 	        	session.setAttribute(PASSPHRASE, phrase);
 	        	return handlePassphraseIntent(session);
-			} else {
+			} else if((Integer) session.getAttribute(SESSION_STAGE) == REM_USER_NAME) {
+//	        	set the name as session variable
+	        	Slot nameSlot = intent.getSlot("Credential");
+	        	String username = nameSlot.getValue();
+	        	session.setAttribute(USERNAME, username);
+	        	return handleRemoveUserPassIntent(session);
+			} else if((Integer) session.getAttribute(SESSION_STAGE) == REM_USER_PASS) {
+				// store passphrase as a session variable
+	        	Slot passSlot = intent.getSlot("Credential");
+	        	String phrase = passSlot.getValue();
+	        	session.setAttribute(PASSPHRASE, phrase);
+	        	return handleActuallyRemoveUserIntent(session);
+			}
+			
+			else {
 				String speechOutput = "What would you like to do with your account?";
 				String repromptText = "What would you like to do with your account?";
 				return newAskResponseLocal(speechOutput, repromptText);
@@ -182,6 +198,36 @@ public class GoobersSpeechlet implements Speechlet {
         }
 	}
 	
+	private SpeechletResponse handleActuallyRemoveUserIntent(Session session) {
+	
+		String userName = session.getAttribute(USERNAME).toString();
+		String passPhrase = session.getAttribute(PASSPHRASE).toString();
+		
+		User theUser = new User(userName, passPhrase, null, null, false);
+		accountDao.removeUser(theUser);
+		
+		session.setAttribute(SESSION_STAGE, null);
+		session.setAttribute(USERNAME, null);
+		session.setAttribute(PASSPHRASE, null);
+		
+		String speechOutput = "You have now removed " + userName + " from the account. What would you like to do with your account?";
+		String repromptText = "What would you like to do with your account?";
+		
+		return newAskResponseLocal(speechOutput, repromptText);
+
+	}
+
+
+	private SpeechletResponse handleRemoveUserPassIntent(Session session) {
+		
+		session.setAttribute(SESSION_STAGE, REM_USER_PASS);
+		
+		String speechOutput = "What is the pass phrase associated with this account?";
+		String repromptText = speechOutput;
+		return newAskResponseLocal(speechOutput, repromptText);
+	}
+
+
 	private SpeechletResponse handleActuallyCreateNewUserIntent(Session session) {
 		
 		String speechOutput = "";
@@ -276,9 +322,9 @@ public class GoobersSpeechlet implements Speechlet {
 				} else {
 					currentUser = tempUser;
 				}
-				System.out.println("currentUser is " + currentUser.getUserName());
-				speechOutput = "What would you like to do with your account?";
-				repromptText = speechOutput;
+
+				speechOutput = "Hello, " + currentUser.getUserName() + ". What would you like to do with your account?";
+				repromptText = "What would you like to do with your account?";
 			} else {
 
 				session.setAttribute(SESSION_STAGE, LOGIN);
@@ -377,8 +423,27 @@ public class GoobersSpeechlet implements Speechlet {
 
 
 	private SpeechletResponse handleRemoveAccountIntent(Session session) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		String speechOutput = "";
+		String repromptText = "";
+
+		if(currentUser != null) {
+			if(currentUser.isOwner()) {
+//				route to getting user name
+				session.setAttribute(SESSION_STAGE, REM_USER_NAME);
+				speechOutput = "What is the user's name?";
+				repromptText = speechOutput;
+			} else {
+				speechOutput = "You do not have permission to remove a user. What would you like to do with this account?";
+				repromptText = "What would you like to do with your account?";
+			}
+			
+		} else {
+			speechOutput = "You must log in to remove a user. Please say your first name.";
+			repromptText = "Please say your first name.";
+		}
+
+		return newAskResponseLocal(speechOutput, repromptText);
 	}
 
 
