@@ -84,56 +84,59 @@ public class GoobersSpeechlet implements Speechlet {
 
 		System.err.println("INTENT NAME: " + intentName);
 		if ("credentialIntent".equals(intentName)) {
-			if((Integer) session.getAttribute(SESSION_STAGE) == LOGIN) {
+			if ((Integer) session.getAttribute(SESSION_STAGE) == LOGIN) {
 //	        	set the name as session variable
-	        	Slot nameSlot = intent.getSlot("Credential");
-	        	String username = nameSlot.getValue();
-	        	session.setAttribute(USERNAME, username);
-	        	return handleNameIntent(session);
-			} else if((Integer) session.getAttribute(SESSION_STAGE) == ADD_USER_NAME) {
+				Slot nameSlot = intent.getSlot("Credential");
+				String username = nameSlot.getValue();
+				session.setAttribute(USERNAME, username);
+				return handleNameIntent(session);
+			} else if ((Integer) session.getAttribute(SESSION_STAGE) == ADD_USER_NAME) {
 //	        	set the name as session variable
-	        	Slot nameSlot = intent.getSlot("Credential");
-	        	String username = nameSlot.getValue();
-	        	session.setAttribute(USERNAME, username);
-	        	return handleAddUserPassIntent(session);
-			} else if((Integer) session.getAttribute(SESSION_STAGE) == ADD_USER_PASS) {
+				Slot nameSlot = intent.getSlot("Credential");
+				String username = nameSlot.getValue();
+				session.setAttribute(USERNAME, username);
+				return handleAddUserPassIntent(session);
+			} else if ((Integer) session.getAttribute(SESSION_STAGE) == ADD_USER_PASS) {
 //	        	set the passphrase as session variable
-	        	Slot passSlot = intent.getSlot("Credential");
-	        	String passphrase = passSlot.getValue();
-	        	session.setAttribute(PASSPHRASE, passphrase);
-	        	return handleUserCredsIntent(session);
+				Slot passSlot = intent.getSlot("Credential");
+				String passphrase = passSlot.getValue();
+				session.setAttribute(PASSPHRASE, passphrase);
+				return handleUserCredsIntent(session);
 			} else if ((Integer) session.getAttribute(SESSION_STAGE) == ADD_USER_CREDS) {
-				Slot credSlot = intent.getSlot("Credential");
-	        	String credLevel = credSlot.getValue();
-	        	System.out.println("credLevel is " + credLevel.toString());
-	        	session.setAttribute(CREDS, credLevel);
-	        	return handleActuallyCreateNewUserIntent(session);
+				//old shouldn't be used
+				return null;
 			} else if ((Integer) session.getAttribute(SESSION_STAGE) == USERLOGIN) {
-	        	// store passphrase as a session variable
-	        	Slot passSlot = intent.getSlot("Credential");
-	        	String phrase = passSlot.getValue();
-	        	session.setAttribute(PASSPHRASE, phrase);
-	        	return handlePassphraseIntent(session);
-			} else if((Integer) session.getAttribute(SESSION_STAGE) == REM_USER_NAME) {
-//	        	set the name as session variable
-	        	Slot nameSlot = intent.getSlot("Credential");
-	        	String username = nameSlot.getValue();
-	        	session.setAttribute(USERNAME, username);
-	        	return handleRemoveUserPassIntent(session);
-			} else if((Integer) session.getAttribute(SESSION_STAGE) == REM_USER_PASS) {
 				// store passphrase as a session variable
-	        	Slot passSlot = intent.getSlot("Credential");
-	        	String phrase = passSlot.getValue();
-	        	session.setAttribute(PASSPHRASE, phrase);
-	        	return handleActuallyRemoveUserIntent(session);
-			}
-			
-			else {
+				Slot passSlot = intent.getSlot("Credential");
+				String phrase = passSlot.getValue();
+				session.setAttribute(PASSPHRASE, phrase);
+				return handlePassphraseIntent(session);
+			} else if ((Integer) session.getAttribute(SESSION_STAGE) == REM_USER_NAME) {
+//	        	set the name as session variable
+				Slot nameSlot = intent.getSlot("Credential");
+				String username = nameSlot.getValue();
+				session.setAttribute(USERNAME, username);
+				return handleRemoveUserPassIntent(session);
+			} else if ((Integer) session.getAttribute(SESSION_STAGE) == REM_USER_PASS) {
+				// store passphrase as a session variable
+				Slot passSlot = intent.getSlot("Credential");
+				String phrase = passSlot.getValue();
+				session.setAttribute(PASSPHRASE, phrase);
+				return handleActuallyRemoveUserIntent(session);
+			} else {
 				String speechOutput = "What would you like to do with your account?";
 				String repromptText = "What would you like to do with your account?";
 				return newAskResponseLocal(speechOutput, repromptText);
 			}
-        } else if("amountIntent".equals(intentName)) {
+		}else if ("viewManageIntent".equals(intentName)) {
+
+			Slot credSlot = intent.getSlot("ViewManage");
+			String credLevel = credSlot.getValue();
+			System.out.println("credLevel is " + credLevel);
+			session.setAttribute(CREDS, credLevel);
+			return handleActuallyCreateNewUserIntent(session);
+
+		}else if("amountIntent".equals(intentName)) {
         	Slot amountSlot = intent.getSlot("Amount");
         	String amountString = amountSlot.getValue();
         	session.setAttribute(AMOUNT, amountString);
