@@ -202,19 +202,29 @@ public class GoobersSpeechlet implements Speechlet {
 	}
 	
 	private SpeechletResponse handleActuallyRemoveUserIntent(Session session) {
-	
+
+		String repromptText = "";
+		String speechOutput = "";
+
 		String userName = session.getAttribute(USERNAME).toString();
 		String passPhrase = session.getAttribute(PASSPHRASE).toString();
 		
 		User theUser = new User(userName, passPhrase, null, null, false);
-		accountDao.removeUser(theUser);
+		boolean success = accountDao.removeUser(theUser);
 		
 		session.setAttribute(SESSION_STAGE, null);
 		session.setAttribute(USERNAME, null);
 		session.setAttribute(PASSPHRASE, null);
+
+		if(success) {
+			speechOutput = "You have now removed " + userName + " from the account. What would you like to do with your account?";
+			repromptText = "What would you like to do with your account?";
+		} else {
+			speechOutput = "Credentials were not valid. User not removed. What would you like to do with your account?";
+			repromptText = "What would you like to do with your account?";
+		}
 		
-		String speechOutput = "You have now removed " + userName + " from the account. What would you like to do with your account?";
-		String repromptText = "What would you like to do with your account?";
+
 		
 		return newAskResponseLocal(speechOutput, repromptText);
 
@@ -235,10 +245,10 @@ public class GoobersSpeechlet implements Speechlet {
 		
 		String speechOutput = "";
 		String repromptText = "";
-		System.out.println(session.getAttribute(CREDS).toString().toLowerCase());
+
 		String credLevel = session.getAttribute(CREDS).toString();
 		String newName = session.getAttribute(USERNAME).toString();
-		String newPassphrase = session.getAttribute(PASSPHRASE).toString();
+		String newPassphrase = session.getAttribute(PASSPHRASE).toString().toLowerCase();
 		
 		if(credLevel.equals("manage")) {
 			User newUser = new User(newName, newPassphrase, null, new Manage(), false);
@@ -356,7 +366,7 @@ public class GoobersSpeechlet implements Speechlet {
 
 		float accountBalance = accountDao.getAccountBalance("checking");
 
-		String speechOutput = "Your bill has been paid. You now have " + accountBalance + " in your checking account.";
+		String speechOutput = "Your bill has been paid. You now have " + accountBalance + " dollars in your checking account. What would you like to do with your account?";
 		String repromptText = "What would you like to do with your account?";
 
 		return newAskResponseLocal(speechOutput, repromptText);
@@ -526,7 +536,7 @@ public class GoobersSpeechlet implements Speechlet {
 			if(currentUser.getAccess().canViewBankBalance()) {
 				session.setAttribute(SESSION_STAGE, VIEW_BALANCE);
 				Float balance = accountDao.getAccountBalance("checking");
-				speechOutput = "Your account balance is " + balance;
+				speechOutput = "Your account balance is " + balance + " dollars. What would you like to do with your account?";
 				repromptText = "What would you like to do with your account?";
 			} else {
 				speechOutput = "You do not have permission to view this account. What would you like to do with your account?";

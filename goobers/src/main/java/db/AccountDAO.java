@@ -167,17 +167,20 @@ public class AccountDAO {
 
     }
 
-    public void removeUser(User user) {
+    public boolean removeUser(User user) {
 
         try {
             PreparedStatement stmt = connection.prepareStatement("DELETE FROM `goobers`.`User` WHERE UserName=? AND PassPhrase = ?;\n");
             stmt.setString(1, user.getUserName());
             stmt.setString(2, user.getPassPhrase());
 
-            stmt.execute();
+            int n = stmt.executeUpdate();
+
+            return n > 0;
 
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
 
 
