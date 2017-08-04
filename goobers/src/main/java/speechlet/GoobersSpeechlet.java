@@ -106,7 +106,7 @@ public class GoobersSpeechlet implements Speechlet {
 	        	System.out.println("credLevel is " + credLevel.toString());
 	        	session.setAttribute(CREDS, credLevel);
 	        	return handleActuallyCreateNewUserIntent(session);
-			} else if ((Integer) session.getAttribute(SESSION_STAGE) == PASSLOGIN) {
+			} else if ((Integer) session.getAttribute(SESSION_STAGE) == USERLOGIN) {
 	        	// store passphrase as a session variable
 	        	Slot passSlot = intent.getSlot("Credential");
 	        	String phrase = passSlot.getValue();
@@ -114,7 +114,7 @@ public class GoobersSpeechlet implements Speechlet {
 	        	return handlePassphraseIntent(session);
 			} else {
 				String speechOutput = "What would you like to do with your account?";
-				String repromptText = "What would yo ulike to do with your account?";
+				String repromptText = "What would you like to do with your account?";
 				return newAskResponseLocal(speechOutput, repromptText);
 			}
         } else if("amountIntent".equals(intentName)) {
@@ -276,7 +276,7 @@ public class GoobersSpeechlet implements Speechlet {
 				} else {
 					currentUser = tempUser;
 				}
-
+				System.out.println("currentUser is " + currentUser.getUserName());
 				speechOutput = "What would you like to do with your account?";
 				repromptText = speechOutput;
 			} else {
