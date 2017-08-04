@@ -50,6 +50,7 @@ public class GoobersSpeechlet implements Speechlet {
 	@Override
 	public void onSessionStarted(SessionStartedRequest request, Session session) throws SpeechletException {
 		accountDao = new AccountDAO();
+		session.setAttribute(SESSION_STAGE, LOGIN);
 	}
 
 
@@ -228,7 +229,6 @@ public class GoobersSpeechlet implements Speechlet {
 		return newAskResponseLocal(speechOutput, repromptText);
 	}
 
-
 	private SpeechletResponse handleNameIntent(Session session) {
 
 		session.setAttribute(SESSION_STAGE, USERLOGIN);
@@ -245,7 +245,7 @@ public class GoobersSpeechlet implements Speechlet {
 		String repromptText = "";
 //		check that passphrase/pin matches
 		session.setAttribute(SESSION_STAGE, PASSLOGIN);
-		
+
 		if(session.getAttribute(USERNAME) == null) {
 			speechOutput = "Please say your username";
 			repromptText = speechOutput;
@@ -255,11 +255,11 @@ public class GoobersSpeechlet implements Speechlet {
 			if(tempUser == null) {
 				tempUser = accountDao.getUserFromPassphrase(session.getAttribute(USERNAME).toString(), session.getAttribute(PASSPHRASE).toString());
 			}
-	
+
 			if(tempUser != null) {
 	//			initialize currentUser
 				boolean isOwner = false;
-	
+
 				if(tempUser.isOwner()) {
 	//				check if the passphrase matches the pin or the passphrase
 					if(session.getAttribute(PASSPHRASE).equals(tempUser.getPin())) {
@@ -270,17 +270,16 @@ public class GoobersSpeechlet implements Speechlet {
 				} else {
 					currentUser = tempUser;
 				}
-	
+
 				speechOutput = "What would you like to do with your account?";
 				repromptText = speechOutput;
 			} else {
 
 				session.setAttribute(SESSION_STAGE, LOGIN);
-				
+
 	//			else reprompt for correct pin/passphrase
 				speechOutput = "Your username and passphrase were incorrect. Please say your first name.";
 				repromptText = "Please say your first name";
-	
 			}
 		}
 
@@ -299,12 +298,12 @@ public class GoobersSpeechlet implements Speechlet {
 		int amount = Integer.parseInt(session.getAttribute(AMOUNT).toString());
 		float oldAmount = accountDao.getAccountBalance("checking");
 		accountDao.setAccountBalance("checking", oldAmount - ((float) amount));
-		
+
 		float accountBalance = accountDao.getAccountBalance("checking");
-		
+
 		String speechOutput = "Your bill has been paid. You now have " + accountBalance + " in your checking account.";
 		String repromptText = "What would you like to do with your account?";
-		
+
 		return newAskResponseLocal(speechOutput, repromptText);
 	}
 	
@@ -329,6 +328,7 @@ public class GoobersSpeechlet implements Speechlet {
 	private SpeechletResponse handleCancelIntent(Session session) {
 		PlainTextOutputSpeech outputSpeech = new PlainTextOutputSpeech();
 		outputSpeech.setText("Goodbye");
+		currentUser = null;
 
 		return SpeechletResponse.newTellResponse(outputSpeech);
 	}
@@ -337,6 +337,7 @@ public class GoobersSpeechlet implements Speechlet {
 	private SpeechletResponse handleStopIntent(Session session) {
 		PlainTextOutputSpeech outputSpeech = new PlainTextOutputSpeech();
 		outputSpeech.setText("Goodbye");
+		currentUser = null;
 
 		return SpeechletResponse.newTellResponse(outputSpeech);
 	}
@@ -345,7 +346,7 @@ public class GoobersSpeechlet implements Speechlet {
 	private SpeechletResponse handleAddAccountIntent(Session session) {
 		String speechOutput = "";
 		String repromptText = "";
-		
+
 		if(currentUser != null) {
 			if(currentUser.isOwner()) {
 //				route to getting user name
@@ -383,6 +384,8 @@ public class GoobersSpeechlet implements Speechlet {
 		String speechOutput = "";
 		String repromptText = "";
 
+		System.out.println("current User " + currentUser);
+
 		// check if user is logged in
 		if(currentUser != null) {
 			// check if user has permissions
@@ -404,7 +407,7 @@ public class GoobersSpeechlet implements Speechlet {
 
 
 	private SpeechletResponse handleTransferMoneyIntent(Session session) {
-		
+
 		String speechOutput = "";
 		String repromptText = "";
 
@@ -457,15 +460,15 @@ public class GoobersSpeechlet implements Speechlet {
 
 		return newAskResponseLocal(speechOutput, repromptText);
 	}
-	
+
 	private SpeechletResponse handleLogoutIntent(Session session) {
 		currentUser = null;
-		
+
 		session.setAttribute(SESSION_STAGE, LOGIN);
-		
+
 		String speechOutput = "You have successfully logged out. Please say your first name.";
 		String repromptText = "Please say your first name.";
-		
+
 		return newAskResponseLocal(speechOutput, repromptText);
 	}
 
@@ -483,7 +486,7 @@ public class GoobersSpeechlet implements Speechlet {
 
 	@Override
 	public void onSessionEnded(SessionEndedRequest request, Session session) throws SpeechletException {
-		
+
 	}
 
 }
