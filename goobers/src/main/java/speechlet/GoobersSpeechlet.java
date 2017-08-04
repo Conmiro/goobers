@@ -406,7 +406,7 @@ public class GoobersSpeechlet implements Speechlet {
 		String repromptText = "";
 
 		if(currentUser != null) {
-			if(currentUser.isOwner()) {
+			if(currentUser.isOwner() && currentUser.getAccess().canAddUser()) {
 //				route to getting user name
 				session.setAttribute(SESSION_STAGE, ADD_USER_NAME);
 				speechOutput = "What is the new user's name?";
@@ -431,7 +431,7 @@ public class GoobersSpeechlet implements Speechlet {
 		String repromptText = "";
 
 		if(currentUser != null) {
-			if(currentUser.isOwner()) {
+			if(currentUser.isOwner() && currentUser.getAccess().canRemoveUser()) {
 //				route to getting user name
 				session.setAttribute(SESSION_STAGE, REM_USER_NAME);
 				speechOutput = "What is the user's name?";

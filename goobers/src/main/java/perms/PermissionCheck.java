@@ -9,5 +9,8 @@ public interface PermissionCheck {
 //	Insurance
 	public abstract boolean canViewPolicy();
 	public abstract boolean canChangePolicy();
-	
+
+//	Extras
+	public abstract boolean canAddUser();
+	public abstract boolean canRemoveUser();
 }

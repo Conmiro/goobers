@@ -27,4 +27,14 @@ public class Manage implements PermissionCheck{
 		return true;
 	}
 
+	@Override
+	public boolean canAddUser() {
+		return true;
+	}
+
+	@Override
+	public boolean canRemoveUser() {
+		return true;
+	}
+
 }

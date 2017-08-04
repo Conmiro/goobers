@@ -27,4 +27,14 @@ public class View implements PermissionCheck {
 		return false;
 	}
 
+	@Override
+	public boolean canAddUser() {
+		return false;
+	}
+
+	@Override
+	public boolean canRemoveUser() {
+		return false;
+	}
+
 }
